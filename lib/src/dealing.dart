@@ -1,54 +1,81 @@
 import 'package:flutter/material.dart';
 
+/// This is the stateful widget that the main application instantiates.
 class Dealing extends StatefulWidget {
   static String routeName = '/dealing';
+  Dealing({Key key}) : super(key: key);
+
   @override
   _DealingState createState() => _DealingState();
 }
 
-class _DealingState extends State<Dealing> with TickerProviderStateMixin {
+/// This is the private State class that goes with MyStatefulWidget.
+/// AnimationControllers can be created with `vsync: this` because of TickerProviderStateMixin.
+class _DealingState extends State<Dealing>
+    with TickerProviderStateMixin {
   AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(
-        duration: const Duration(milliseconds: 4000),
-        vsync: this
+      duration: const Duration(seconds: 1),
+      vsync: this,
     );
-    _controller.addStatusListener((status) {
-      if(status == AnimationStatus.completed){
-        _controller.reverse();
-      }else if(status == AnimationStatus.dismissed){
-        _controller.forward();
-      }
-    });
+    // _controller.addStatusListener((status) {
+    //   if(status == AnimationStatus.completed){
+    //     _controller.reverse();
+    //   }else if(status == AnimationStatus.dismissed){
+    //     _controller.forward();
+    //   }
+    // });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      appBar: AppBar(title: Text("组合动画")),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          _controller.forward();
-        },
-        child: Center(
-          child: Container(
-            width: 300.0,
-            height: 300.0,
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.1),
-              border: Border.all(
-                color:  Colors.black.withOpacity(0.1),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Dealing'),
+      ),
+      body: Center(
+        child: Container(
+          child: Stack(
+
+            children: <Widget>[
+              Positioned(
+                bottom: 100.0,
+                child: RaisedButton(
+                  child: Text('Go', style: TextStyle(fontSize: 20)),
+                  onPressed: (){
+                    _controller.forward();
+                  },
+                ),
               ),
-            ),
-            //调用我们定义的交织动画Widget
-            child: DealingAnimation(
-                controller: _controller
-            ),
+              CustomCard(
+                controller: _controller,
+                lb: 100,
+                le: 10,
+                tb: 700,
+                te: 10,
+                li1: 0.0,
+                li2: 0.5,
+              ),
+              CustomCard(
+                controller: _controller,
+                lb: 200,
+                le: 100,
+                tb: 700,
+                te: 10,
+                li1: 0.5,
+                li2: 1.0,
+              ),
+            ],
           ),
         ),
       ),
@@ -56,44 +83,31 @@ class _DealingState extends State<Dealing> with TickerProviderStateMixin {
   }
 }
 
-class DealingAnimation extends StatelessWidget {
-  DealingAnimation({ Key key, this.controller }): super(key: key){
-    //高度动画
-    height = Tween<double>(
-      begin:.0 ,
-      end: 300.0,
+class CustomCard extends StatelessWidget {
+  CustomCard({ Key key, this.controller, this.lb, this.le, this.tb, this.te, this.li1, this.li2 }): super(key: key){
+
+    left = Tween<double>(
+      begin: lb,
+      end: le,
     ).animate(
       CurvedAnimation(
         parent: controller,
         curve: Interval(
-          0.0, 0.6, //间隔，前60%的动画时间
-          curve: Curves.easeInOutQuart,
+          li1, li2, //间隔，后40%的动画时间
+          curve: Curves.linear,
         ),
       ),
     );
 
-    color = ColorTween(
-      begin:Colors.green ,
-      end:Colors.red,
+    top = Tween<double>(
+      begin: tb,
+      end: te,
     ).animate(
       CurvedAnimation(
         parent: controller,
         curve: Interval(
-          0.0, 0.6,//间隔，前60%的动画时间
-          curve: Curves.bounceIn,
-        ),
-      ),
-    );
-
-    padding = Tween<EdgeInsets>(
-      begin:EdgeInsets.only(left: 0.0),
-      end:EdgeInsets.only(left: 100.0),
-    ).animate(
-      CurvedAnimation(
-        parent: controller,
-        curve: Interval(
-          0.6, 1.0, //间隔，后40%的动画时间
-          curve: Curves.bounceIn,
+          li1, li2, //间隔，后40%的动画时间
+          curve: Curves.linear,
         ),
       ),
     );
@@ -101,18 +115,28 @@ class DealingAnimation extends StatelessWidget {
 
 
   final Animation<double> controller;
-  Animation<double> height;
-  Animation<EdgeInsets> padding;
-  Animation<Color> color;
+  double lb, le, tb, te, li1, li2;
+  Animation<double> left;
+  Animation<double> top;
 
   Widget _buildAnimation(BuildContext context, Widget child) {
-    return Container(
-      alignment: Alignment.bottomCenter,
-      padding:padding.value ,
+    return Positioned(
+      left: left.value,
+      top: top.value,
+      width: 60,
+      height: 80,
       child: Container(
-        color: color.value,
-        width: 50.0,
-        height: height.value,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(3.0)),
+            color: Colors.deepOrangeAccent,
+            boxShadow: [
+              new BoxShadow(
+                  color: Colors.black26,
+                  offset: new Offset(2.0, 2.0),
+                  blurRadius: 4.0,
+                  spreadRadius: 0.0)
+            ]
+        ),
       ),
     );
   }
