@@ -62,7 +62,7 @@ class _DealingState extends State<Dealing> with TickerProviderStateMixin {
                   minWidth: 100.0,
                   height: 30.0,
                   child: RaisedButton(
-                    child: Text('Deal', style: TextStyle(fontSize: 20)),
+                    child: Text('Deal', style: TextStyle(fontSize: 20, color: Colors.white)),
                     onPressed: () {
                       _controller.forward();
                     },
