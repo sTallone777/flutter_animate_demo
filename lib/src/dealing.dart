@@ -60,7 +60,7 @@ class _DealingState extends State<Dealing> with TickerProviderStateMixin {
                 left: s.width / 2 - 50,
                 child: ButtonTheme(
                   minWidth: 100.0,
-                  height: 30.0,
+                  height: 40.0,
                   child: RaisedButton(
                     child: Text('Deal', style: TextStyle(fontSize: 20, color: Colors.white)),
                     onPressed: () {
