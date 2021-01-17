@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate_demo/src/dealing.dart';
+import 'package:flutter_animate_demo/src/thunderx.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,6 +17,11 @@ final demos = [
     name: 'Dealing',
     route: Dealing.routeName,
     builder: (context) => Dealing(),
+  ),
+  Demo(
+    name: 'ThunderX',
+    route: ThunderX.routeName,
+    builder: (context) => ThunderX(),
   ),
 ];
 
