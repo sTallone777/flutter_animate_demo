@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate_demo/src/dealing.dart';
+import 'package:flutter_animate_demo/src/drawimg.dart';
 import 'package:flutter_animate_demo/src/thunderx.dart';
 
 void main() => runApp(MyApp());
@@ -22,6 +23,11 @@ final demos = [
     name: 'ThunderX',
     route: ThunderX.routeName,
     builder: (context) => ThunderX(),
+  ),
+  Demo(
+    name: 'DrawImage',
+    route: DrawImg.routeName,
+    builder: (context) => DrawImg(),
   ),
 ];
 
