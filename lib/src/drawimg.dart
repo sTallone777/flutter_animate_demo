@@ -23,7 +23,7 @@ class _DrawImgState extends State<DrawImg> {
   }
 
   Future <Null> init() async {
-    final ByteData data = await rootBundle.load('assets/suitosakura.jpg');
+    final ByteData data = await rootBundle.load('assets/bird.jpg');
     image = await loadImage(new Uint8List.view(data.buffer));
   }
 
