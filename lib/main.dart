@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate_demo/src/dealing.dart';
 import 'package:flutter_animate_demo/src/drawimg.dart';
+import 'package:flutter_animate_demo/src/polyline.dart';
 import 'package:flutter_animate_demo/src/thunderx.dart';
 
 void main() => runApp(MyApp());
@@ -20,9 +21,9 @@ final demos = [
     builder: (context) => Dealing(),
   ),
   Demo(
-    name: 'ThunderX',
-    route: ThunderX.routeName,
-    builder: (context) => ThunderX(),
+    name: 'Polyline',
+    route: Polyline.routeName,
+    builder: (context) => Polyline(),
   ),
   Demo(
     name: 'DrawImage',

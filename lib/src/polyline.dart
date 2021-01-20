@@ -1,37 +1,22 @@
 import 'dart:ui';
-​
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-​
-void main() => runApp(MyApp());
-​
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Visualizer',
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-      ),
-      home: MyPainter(),
-    );
-  }
+
+class Polyline extends StatefulWidget {
+  static String routeName = '/Polyline';
+  Polyline({Key key}) : super(key : key);
+
+  _PolylineState createState() => _PolylineState();
 }
-​
-class MyPainter extends StatefulWidget {
-  @override
-  _MyPainterState createState() => _MyPainterState();
-}
-​
-class _MyPainterState extends State<MyPainter>
-    with SingleTickerProviderStateMixin {
-​
+
+class _PolylineState extends State<Polyline> with TickerProviderStateMixin {
+
   AnimationController controller;
-​
+
   @override
   void initState() {
     super.initState();
-​
+
     controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: 1),
@@ -43,15 +28,22 @@ class _MyPainterState extends State<MyPainter>
           controller.forward();
         }
       });
-​
+
     controller.forward();
   }
-​
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Visualizer'),
+        title: Text('Polyline'),
       ),
       body: SafeArea(
         child: Column(
@@ -66,8 +58,7 @@ class _MyPainterState extends State<MyPainter>
     );
   }
 }
-​
-// FOR PAINTING THE CIRCLE
+
 class LinePanter extends StatelessWidget  {
   final double startX, startY, endX, endY, startTime, endTime;
   final Animation<double> controller;
@@ -110,14 +101,14 @@ class LinePanter extends StatelessWidget  {
       ),
     );
   }
-​
+
   Widget _buildAnimation(BuildContext context, Widget child) {
     return CustomPaint(
       painter: ShapePainter(startX, startY, finalX.value, finalY.value),
       child: Container(),
     );
   }
-​
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -126,8 +117,7 @@ class LinePanter extends StatelessWidget  {
     );
   }
 }
-​
-​
+
 class ShapePainter extends CustomPainter {
   final double startX;
   final double startY;
@@ -147,13 +137,13 @@ class ShapePainter extends CustomPainter {
       ..color = Colors.teal
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.butt;
-​
+
     Offset startingPoint = Offset(startX, startY);
     Offset endingPoint = Offset(endX, endY);
-​
+
     canvas.drawLine(startingPoint, endingPoint, paint);
   }
-​
+
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
