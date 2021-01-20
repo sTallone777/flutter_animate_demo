@@ -1,17 +1,24 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
+import 'dart:math';
 
 class Polyline extends StatefulWidget {
   static String routeName = '/Polyline';
-  Polyline({Key key}) : super(key : key);
+
+  Polyline({Key key}) : super(key: key);
 
   _PolylineState createState() => _PolylineState();
 }
 
-class _PolylineState extends State<Polyline> with TickerProviderStateMixin {
+///line numbers
+const int num = 50;
 
+///per duration of animations
+const int perDuration = 80;
+
+class _PolylineState extends State<Polyline> with TickerProviderStateMixin {
   AnimationController controller;
+  Random r = new Random();
 
   @override
   void initState() {
@@ -19,11 +26,10 @@ class _PolylineState extends State<Polyline> with TickerProviderStateMixin {
 
     controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 1),
-    )
-      ..addStatusListener((status) {
+      duration: Duration(milliseconds: num * perDuration),
+    )..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          controller.repeat();
+          controller.reverse();
         } else if (status == AnimationStatus.dismissed) {
           controller.forward();
         }
@@ -41,6 +47,23 @@ class _PolylineState extends State<Polyline> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    Size s = MediaQuery.of(context).size;
+    int width = s.width.floor();
+    int height = s.height.floor();
+    //coordinates
+    List<position> pList = List();
+    for (var i = 0; i < num; i++) {
+      position p = new position();
+      p.dx = double.parse(r.nextInt(width).toString());
+      p.dy = double.parse(r.nextInt(height).toString());
+      pList.add(p);
+    }
+
+    //animate distance
+    String tempDistance = (1 / num).toStringAsFixed(3);
+    double animateDistance = double.parse(
+        tempDistance.substring(0, tempDistance.lastIndexOf('.') + 3));
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Polyline'),
@@ -49,9 +72,16 @@ class _PolylineState extends State<Polyline> with TickerProviderStateMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            LinePanter(controller, 100, 50, 150, 200, 0.0, 0.3),
-            LinePanter(controller, 150, 200, 200, 100, 0.3, 0.6),
-            LinePanter(controller, 200, 100, 400, 500, 0.6, 1.0),
+            for (var i = 0; i < pList.length - 1; i++)
+              LinePainter(
+                controller: controller,
+                startX: pList[i].dx,
+                startY: pList[i].dy,
+                endX: pList[i + 1].dx,
+                endY: pList[i + 1].dy,
+                startTime: i * animateDistance,
+                endTime: (i + 1) * animateDistance,
+              ),
           ],
         ),
       ),
@@ -59,12 +89,15 @@ class _PolylineState extends State<Polyline> with TickerProviderStateMixin {
   }
 }
 
-class LinePanter extends StatelessWidget  {
+///line painter
+// ignore: must_be_immutable
+class LinePainter extends StatelessWidget {
   final double startX, startY, endX, endY, startTime, endTime;
   final Animation<double> controller;
   Animation<double> finalX;
   Animation<double> finalY;
-  LinePanter(
+
+  LinePainter({
     this.controller,
     this.startX,
     this.startY,
@@ -72,7 +105,7 @@ class LinePanter extends StatelessWidget  {
     this.endY,
     this.startTime,
     this.endTime,
-  ) {
+  }) {
     finalX = Tween<double>(
       begin: startX,
       end: endX,
@@ -82,11 +115,11 @@ class LinePanter extends StatelessWidget  {
         curve: Interval(
           startTime,
           endTime,
-          curve: Curves.easeOutCirc,
+          curve: Curves.easeOutSine,
         ),
       ),
     );
-    
+
     finalY = Tween<double>(
       begin: startY,
       end: endY,
@@ -96,7 +129,7 @@ class LinePanter extends StatelessWidget  {
         curve: Interval(
           startTime,
           endTime,
-          curve: Curves.easeOutCirc,
+          curve: Curves.easeOutSine,
         ),
       ),
     );
@@ -118,23 +151,24 @@ class LinePanter extends StatelessWidget  {
   }
 }
 
+///line
 class ShapePainter extends CustomPainter {
   final double startX;
   final double startY;
   final double endX;
   final double endY;
-  
+
   ShapePainter(
     this.startX,
     this.startY,
     this.endX,
     this.endY,
   );
-  
+
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
-      ..color = Colors.teal
+      ..color = Colors.cyan
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.butt;
 
@@ -148,4 +182,10 @@ class ShapePainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
   }
+}
+
+// ignore: camel_case_types
+class position {
+  double dx;
+  double dy;
 }
