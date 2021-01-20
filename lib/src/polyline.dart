@@ -1,10 +1,12 @@
-import 'dart:ui';
 
+_paint
+import 'dart:ui';
+​
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-
+​
 void main() => runApp(MyApp());
-
+​
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -17,36 +19,36 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
+​
 class MyPainter extends StatefulWidget {
   @override
   _MyPainterState createState() => _MyPainterState();
 }
-
+​
 class _MyPainterState extends State<MyPainter>
     with SingleTickerProviderStateMixin {
-
+​
   AnimationController controller;
-
+​
   @override
   void initState() {
     super.initState();
-
+​
     controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: 1),
     )
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          controller.reverse();
+          controller.repeat();
         } else if (status == AnimationStatus.dismissed) {
           controller.forward();
         }
       });
-
+​
     controller.forward();
   }
-
+​
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +68,7 @@ class _MyPainterState extends State<MyPainter>
     );
   }
 }
-
+​
 // FOR PAINTING THE CIRCLE
 class LinePanter extends StatelessWidget  {
   final double startX, startY, endX, endY, startTime, endTime;
@@ -91,7 +93,7 @@ class LinePanter extends StatelessWidget  {
         curve: Interval(
           startTime,
           endTime,
-          curve: Curves.linear,
+          curve: Curves.easeOutCirc,
         ),
       ),
     );
@@ -105,19 +107,19 @@ class LinePanter extends StatelessWidget  {
         curve: Interval(
           startTime,
           endTime,
-          curve: Curves.linear,
+          curve: Curves.easeOutCirc,
         ),
       ),
     );
   }
-
+​
   Widget _buildAnimation(BuildContext context, Widget child) {
     return CustomPaint(
-      painter: ShapePainter(startX, startY, finalX.value, finalY.value, 5),
+      painter: ShapePainter(startX, startY, finalX.value, finalY.value),
       child: Container(),
     );
   }
-
+​
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -126,43 +128,44 @@ class LinePanter extends StatelessWidget  {
     );
   }
 }
-
-
+​
+​
 class ShapePainter extends CustomPainter {
   final double startX;
   final double startY;
   final double endX;
   final double endY;
-  final double sw;
-  Paint _paint;
   
   ShapePainter(
     this.startX,
     this.startY,
     this.endX,
     this.endY,
-    this.sw,
-  ){
-    _paint = Paint();
-    _paint.strokeWidth = this.sw;
-  }
+  );
   
   @override
   void paint(Canvas canvas, Size size) {
-    //var paint = Paint()
-      _paint.color = Colors.teal;
-      _paint.strokeWidth = 0;
-      _paint.strokeCap = StrokeCap.round;
-
+    var paint = Paint()
+      ..color = Colors.teal
+      ..strokeWidth = 2
+      ..strokeCap = StrokeCap.butt;
+​
     Offset startingPoint = Offset(startX, startY);
     Offset endingPoint = Offset(endX, endY);
-
-    canvas.drawLine(startingPoint, endingPoint, _paint);
+​
+    canvas.drawLine(startingPoint, endingPoint, paint);
   }
-
+​
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
   }
 }
+​
+​
 
+Privacy notice Send feedback
+ Null Safety
+6 issues
+show
+Based on Flutter 1.25.0-8.2.pre Dart SDK 2.10.4
