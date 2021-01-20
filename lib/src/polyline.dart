@@ -1,5 +1,3 @@
-
-_paint
 import 'dart:ui';
 ​
 import 'package:flutter/material.dart';
@@ -161,11 +159,3 @@ class ShapePainter extends CustomPainter {
     return true;
   }
 }
-​
-​
-
-Privacy notice Send feedback
- Null Safety
-6 issues
-show
-Based on Flutter 1.25.0-8.2.pre Dart SDK 2.10.4
