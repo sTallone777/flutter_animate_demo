@@ -9,4 +9,4 @@ A new Flutter application for test animation
 ![avatar](./assets/polyline.gif)
 
 ## DrawImage
-![avatar](./assets/bird.gif)
+![avatar](./assets/drawimage.gif)
