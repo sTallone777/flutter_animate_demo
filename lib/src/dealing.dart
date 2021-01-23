@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 const double cardWidth = 80.0;
 const int cardNum = 54;
-const int animateDuration = 200;
+const int animateDuration = 600;   //pre duration of animate
+const int delay = 200;
 /// This is the stateful widget that the main application instantiates.
 class Dealing extends StatefulWidget {
   static String routeName = '/dealing';
@@ -21,7 +22,7 @@ class _DealingState extends State<Dealing> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: animateDuration * cardNum),
+      duration: const Duration(milliseconds: (cardNum - 1) * delay + animateDuration),
       vsync: this,
     );
   }
@@ -38,8 +39,13 @@ class _DealingState extends State<Dealing> with TickerProviderStateMixin {
     double lb = s.width / 2 - cardWidth / 2;  //middle position
     double distance = 10.0; //card distance
     //animate duration of per card(two decimal)
-    String tempDistance = (1 / cardNum).toStringAsFixed(3);
+    int totalTime = (cardNum - 1) * delay + animateDuration;
+    // String tempDistance = (1 / cardNum).toStringAsFixed(3);
+    // double animateDistance = double.parse(tempDistance.substring(0, tempDistance.lastIndexOf('.') + 3));
+    String tempDistance = (animateDuration / totalTime).toStringAsFixed(3);
+    String tempDelay = (delay / totalTime).toStringAsFixed(3);
     double animateDistance = double.parse(tempDistance.substring(0, tempDistance.lastIndexOf('.') + 3));
+    double animateDelay = double.parse(tempDelay.substring(0, tempDistance.lastIndexOf('.') + 3));
 
     int col = ((s.width - distance) / (cardWidth + distance)).floor();
     int row = (cardNum / col).ceil();
@@ -78,8 +84,10 @@ class _DealingState extends State<Dealing> with TickerProviderStateMixin {
                     leftEnd: distance * (j + 1) + cardWidth * j + offset,
                     topBegin: s.height,
                     topEnd: distance * (i + 1),
-                    interval: (i * col + j) * animateDistance,
-                    time: (i * col + (j + 1)) * animateDistance,
+                    // interval: (i * col + j) * animateDistance,
+                    // time: (i * col + (j + 1)) * animateDistance,
+                    interval: (i * col + j) * animateDelay,
+                    time: (i * col + j) * animateDelay + animateDistance,
                   ),
             ],
           ),
@@ -109,7 +117,7 @@ class CustomCard extends StatelessWidget {
         curve: Interval(
           interval,
           time,
-          curve: Curves.linear,
+          curve: Curves.easeOutBack,
         ),
       ),
     );
@@ -123,7 +131,7 @@ class CustomCard extends StatelessWidget {
         curve: Interval(
           interval,
           time,
-          curve: Curves.linear,
+          curve: Curves.easeOutBack,
         ),
       ),
     );
